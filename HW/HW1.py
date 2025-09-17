@@ -1,72 +1,85 @@
 import streamlit as st
 from openai import OpenAI
-import fitz  # PyMuPDF
+import fitz  # PyMuPDF for reading PDFs
 
-# Helper function to read PDFs
 def read_pdf(file):
+    """Extract text from uploaded PDF using PyMuPDF."""
     doc = fitz.open(stream=file.read(), filetype="pdf")
     text = ""
     for page in doc:
         text += page.get_text()
     return text
 
-# Show title and description
-st.title("MY Document question answering")
+st.title("MY HW1 Document Q&A App")
 st.write(
-    "Upload a document below and ask a question about it – GPT will answer! "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
+    "Upload a `.txt` or `.pdf` document and ask a question about it – GPT will answer! "
+    "You’ll need an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys)."
 )
 
-# Ask user for their OpenAI API key
+# API key input
 openai_api_key = st.text_input("OpenAI API Key", type="password")
 if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
+    st.info("Please enter your OpenAI API key to continue.", icon="🗝️")
 else:
-    # Create an OpenAI client
+    # Initialize OpenAI client
     client = OpenAI(api_key=openai_api_key)
 
-    # Let the user upload a file
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .pdf)", type=("txt", "pdf")
-    )
+    # File uploader
+    uploaded_file = st.file_uploader("Upload a document (.txt or .pdf)", type=("txt", "pdf"))
 
-    # Ask the user for a question
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
+    # If file removed -> clear stored document
+    if not uploaded_file:
+        st.session_state.pop("document", None)
 
-    if uploaded_file and question:
-        # Process the uploaded file
+    # If file uploaded and not already stored
+    if uploaded_file and "document" not in st.session_state:
         file_extension = uploaded_file.name.split(".")[-1].lower()
 
         if file_extension == "txt":
-            document = uploaded_file.read().decode()
+            st.session_state["document"] = uploaded_file.read().decode()
         elif file_extension == "pdf":
-            document = read_pdf(uploaded_file)
+            st.session_state["document"] = read_pdf(uploaded_file)
         else:
             st.error("Unsupported file type.")
             st.stop()
 
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
-        ]
+    # Question input
+    question = st.text_area(
+        "Now ask a question about the document!",
+        placeholder="Example: Is this course hard?",
+        disabled=not uploaded_file,
+    )
 
-        # Try multiple models
-        models = ["gpt-3.5-turbo", "gpt-4.1", "gpt-5-chat-latest", "gpt-5-nano"]
+    # Handle Q&A
+    if uploaded_file and question:
+        document = st.session_state.get("document", "")
 
-        for model in models:
-            st.subheader(f"Answer using {model}:")
-            try:
-                stream = client.chat.completions.create(
-                    model=model,
-                    messages=messages,
-                    stream=True,
-                )
-                st.write_stream(stream)
-            except Exception as e:
-                st.error(f"Error with {model}: {e}")
+        if not document.strip():
+            st.warning("No content extracted from file.")
+        else:
+            # Try 4 models
+            models = [
+                "gpt-3.5-turbo",
+                "gpt-4.1",
+                "gpt-5-chat-latest",
+                "gpt-5-nano",
+            ]
+
+            for model in models:
+                st.subheader(f"Answer using {model}:")
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f"Here is a document:\n\n{document}\n\n---\n\nQuestion: {question}",
+                    }
+                ]
+                try:
+                    stream = client.chat.completions.create(
+                        model=model,
+                        messages=messages,
+                        stream=True,
+                    )
+                    st.write_stream(stream)
+                except Exception as e:
+                    st.error(f"Error with {model}: {e}")
+

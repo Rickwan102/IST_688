@@ -1,3 +1,6 @@
 streamlit
 openai
+chromadb
 pymupdf
+beautifulsoup4
+requests

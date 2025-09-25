@@ -3,6 +3,7 @@ import lab1
 import lab2
 import lab3
 import lab4
+import lab5
 import HW.HW1 as hw1
 import HW.HW2 as hw2
 import HW.HW3 as hw3
@@ -14,7 +15,7 @@ st.sidebar.title("Navigation")
 section = st.sidebar.radio("Choose section:", ["Labs", "HWs"])
 
 if section == "Labs":
-    page = st.sidebar.radio("Choose a lab:", ["Lab 1", "Lab 2", "Lab 3", "Lab 4"])
+    page = st.sidebar.radio("Choose a lab:", ["Lab 1", "Lab 2", "Lab 3", "Lab 4", "Lab 5"])
     if page == "Lab 1":
         lab1.run()
     elif page == "Lab 2":
@@ -23,6 +24,9 @@ if section == "Labs":
         lab3.run()
     elif page == "Lab 4":
         lab4.run()
+    elif page == "Lab 5":
+        lab5.run()
+
 
 elif section == "HWs":
     page = st.sidebar.radio("Choose a homework:", ["HW1", "HW2", "HW3", "HW4"])

@@ -30,7 +30,7 @@ def get_current_weather(location: str, API_key: str):
 
 # Main entrypoint for Lab 5
 def run():
-    st.title("Lab 5: Weather App 🌦️")
+    st.title("Lab 5: Weather App")
 
     location = st.text_input("Enter a city:", "Syracuse")
 
@@ -46,5 +46,5 @@ def run():
             st.write(f"Feels Like: {weather['feels_like']} °C")
             st.write(f"High: {weather['temp_max']} °C")
             st.write(f"Low: {weather['temp_min']} °C")
-            st.write(f" Humidity: {weather['humidity']} %")
+            st.write(f"Humidity: {weather['humidity']} %")
 

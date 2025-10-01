@@ -1,14 +1,25 @@
+import sys
+import pysqlite3
+sys.modules["sqlite3"] = pysqlite3
+
 import streamlit as st
+import chromadb
+
+# Labs
 import lab1
 import lab2
 import lab3
 import lab4
 import lab5
+
+# Homeworks
 import HW.HW1 as hw1
 import HW.HW2 as hw2
 import HW.HW3 as hw3
 import HW.HW4 as hw4
+import HW.HW5 as hw5
 
+# Sidebar Navigation
 st.sidebar.title("Navigation")
 
 # First level: choose section
@@ -27,9 +38,8 @@ if section == "Labs":
     elif page == "Lab 5":
         lab5.run()
 
-
 elif section == "HWs":
-    page = st.sidebar.radio("Choose a homework:", ["HW1", "HW2", "HW3", "HW4"])
+    page = st.sidebar.radio("Choose a homework:", ["HW1", "HW2", "HW3", "HW4", "HW5"])
     if page == "HW1":
         hw1.run()
     elif page == "HW2":
@@ -38,4 +48,5 @@ elif section == "HWs":
         hw3.run()
     elif page == "HW4":
         hw4.run()
-
+    elif page == "HW5":
+        hw5.run()

@@ -4,3 +4,4 @@ chromadb
 pymupdf
 beautifulsoup4
 requests
+pysqlite3-binary

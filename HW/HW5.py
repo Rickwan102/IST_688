@@ -24,7 +24,7 @@ def retrieve_relevant_info(collection, query: str, top_k: int = 3):
 # Main app entrypoint
 # --------------------------
 def run():
-    st.title("HW5: Chatbot with Short-Term Memory 🤖")
+    st.title("HW5: Chatbot with Short-Term Memory")
 
     # Initialize ChromaDB client
     chroma_client = chromadb.PersistentClient(path="clubs_db")

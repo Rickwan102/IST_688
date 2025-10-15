@@ -34,8 +34,8 @@ if "GOOGLE_API_KEY" in st.secrets:
     google_client = genai
 
 # Define paths for data and vector database storage
-CSV_PATH = os.path.join("HWs", "HW7data.csv")
-VECTOR_DB_PATH = os.path.join("ChromaDB_HW7")
+CSV_PATH = os.path.join(os.path.dirname(__file__), "HW7data.csv")
+VECTOR_DB_PATH = os.path.join(os.path.dirname(__file__), "ChromaDB_HW7")
 
 # Step 1: Load CSV data
 
